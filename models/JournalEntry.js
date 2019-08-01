@@ -7,6 +7,12 @@ const schema = new mongoose.Schema({
   content: {
     type: String,
   },
+  images: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Image'
+    }
+  ]
 })
 
 module.exports = mongoose.model('JournalEntry', schema)

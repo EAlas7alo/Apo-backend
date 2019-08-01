@@ -6,8 +6,6 @@ type Mutation {
   createEntry (
     title: String!
     content: String!
-    date: Date!
-    id: ID
   ): Entry
 
   editEntry (
@@ -17,7 +15,7 @@ type Mutation {
 
   uploadImage (
     file: Upload!
-  ): File!
+  ): Boolean!
 
   deleteEntry (
     id: ID!

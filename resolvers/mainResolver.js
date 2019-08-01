@@ -1,4 +1,6 @@
 const JournalEntry = require('../models/JournalEntry')
+const Image = require('../models/Image')
+const fs = require('fs')
 
 const resolvers = {
   Query: {
@@ -24,8 +26,32 @@ const resolvers = {
     },
 
     uploadImage: async (root, { file }, context) => {
-      //const { stream, filename, mimetype, encoding } = await file
+      const { createReadStream, filename, mimetype, encoding } = await file
       console.log(file)
+      //console.log(createReadStream())
+      const image = new Image({
+        type: mimetype,
+      })
+      let imageData = ''
+      try {
+        const stream = createReadStream()
+        const saveToFile = await new Promise((resolve, reject) => 
+          stream
+            //.pipe(fs.createWriteStream(imageData))
+            .on('data', (chunk) => imageData += chunk)
+            .on('error', error => reject(error))
+            .on('finish', () => resolve())
+        )
+        
+        console.log(saveToFile)
+        image.data = imageData
+      } catch (error) {
+        console.log(error)
+      }
+      
+      image.save()
+      
+      return true
     },
   }
 }
