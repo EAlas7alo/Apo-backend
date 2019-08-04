@@ -12,6 +12,7 @@ type File {
 type Entry {
   title: String
   content: String
+  images: [String]
   id: ID!
   date: Date
 }

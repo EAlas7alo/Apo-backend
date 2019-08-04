@@ -1,6 +1,4 @@
 const JournalEntry = require('../models/JournalEntry')
-const Image = require('../models/Image')
-const fs = require('fs')
 
 const resolvers = {
   Query: {
@@ -11,12 +9,12 @@ const resolvers = {
 
   Mutation: {
     createEntry: async (root, args, context) => {
-      const entry = new JournalEntry({ title: args.title, content: args.content, })
+      const entry = new JournalEntry({ title: args.title, content: args.content, images: args.images })
       await entry.save()
       return entry
     },
     editEntry: async (root, args, context) => {
-      const entry = await JournalEntry.findByIdAndUpdate(args.id, {content: args.content}, {new: true})
+      const entry = await JournalEntry.findByIdAndUpdate(args.id, {title: args.title, content: args.content, images: args.images}, {new: true})
 
       return entry
     },
@@ -24,7 +22,7 @@ const resolvers = {
       await JournalEntry.findByIdAndDelete(args.id)
       return true
     },
-
+  /*
     uploadImage: async (root, { file }, context) => {
       const { createReadStream, filename, mimetype, encoding } = await file
       console.log(file)
@@ -52,7 +50,7 @@ const resolvers = {
       image.save()
       
       return true
-    },
+    },*/
   }
 }
 
