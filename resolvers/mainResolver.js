@@ -1,4 +1,5 @@
 const JournalEntry = require('../models/JournalEntry')
+const Reminder = require('../models/Reminder')
 
 const resolvers = {
   Query: {
@@ -22,6 +23,21 @@ const resolvers = {
       await JournalEntry.findByIdAndDelete(args.id)
       return true
     },
+    createReminder: async (root, args, context) => {
+      const reminder = new Reminder({ 
+        content: args.content, 
+        dateAdded: new Date(), 
+        dateExpiry: new Date(args.dateExpiry),
+        resolved: false
+      }) 
+      await reminder.save()
+      return reminder
+    },
+    markReminderAsResolved: async (root, args, context) => {
+      const reminder = Reminder.findByIdAndUpdate(args.id, {resolved: true}, {new: true})
+
+      return reminder
+    }
   /*
     uploadImage: async (root, { file }, context) => {
       const { createReadStream, filename, mimetype, encoding } = await file

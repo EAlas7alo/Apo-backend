@@ -4,12 +4,14 @@ const queries = require('./typeDefs/queries')
 const mutations = require('./typeDefs/mutations')
 const resolvers = require('./resolvers/mainResolver')
 require('dotenv').config()
+const reminderAgenda = require('./reminders/agenda')
+
 
 mongoose.set('useFindAndModify', false)
 
 const MONGODB_URI = process.env.MONGODB_URI
 
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true})
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true })
   .then(() => {
     console.log('connected to MongoDB')
   })
@@ -24,6 +26,8 @@ const server = new ApolloServer({
     console.log(err)
   }
 })
+
+reminderAgenda()
 
 server.listen().then(({ url }) => {
   console.log(`🚀  Server ready at ${url}`)

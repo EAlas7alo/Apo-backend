@@ -11,6 +11,7 @@
   "author": "Eetu Alastalo",
   "license": "MIT",
   "dependencies": {
+    "agenda": "^2.0.2",
     "apollo-server": "^2.7.2",
     "dotenv": "^8.0.0",
     "graphql": "^14.4.2",

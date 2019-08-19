@@ -17,9 +17,15 @@ type Entry {
   date: Date
 }
 
+type Reminder {
+  content: String
+  dateExpiry: Date
+}
+
 type Query {
   allEntries: [Entry]
 }
+
 
 `
 

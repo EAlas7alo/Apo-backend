@@ -10,10 +10,10 @@ type Mutation {
   ): Entry
 
   editEntry (
-    title: String!
-    content: String!
+    title: String
+    content: String
     id: ID!
-    images: [String!]!
+    images: [String]
   ): Entry
 
   uploadImage (
@@ -23,6 +23,15 @@ type Mutation {
   deleteEntry (
     id: ID!
   ) : Boolean
+
+  createReminder (
+    content: String!
+    dateExpiry: Date!
+  ) : Reminder
+
+  markReminderAsResolved (
+    id: ID!
+  ) : Reminder
 }
 `
 
