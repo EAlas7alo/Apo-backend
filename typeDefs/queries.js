@@ -20,10 +20,14 @@ type Entry {
 type Reminder {
   content: String
   dateExpiry: Date
+  id: ID!
+  resolved: Boolean!
 }
 
 type Query {
   allEntries: [Entry]
+  allReminders: [Reminder]
+  activeReminders: [Reminder]
 }
 
 

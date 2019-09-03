@@ -31,7 +31,7 @@ type Mutation {
 
   markReminderAsResolved (
     id: ID!
-  ) : Reminder
+  ) : Boolean
 }
 `
 
