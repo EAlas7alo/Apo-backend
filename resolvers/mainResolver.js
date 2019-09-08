@@ -39,8 +39,9 @@ const resolvers = {
       await reminder.save()
       return reminder
     },
-    markReminderAsResolved: async (root, args) => {
-      await Reminder.findByIdAndUpdate(args.id, {resolved: true}, {new: true})
+    toggleResolvedStatus: async (root, args) => {
+      const reminder = await Reminder.findById(args.id)
+      await Reminder.findByIdAndUpdate(args.id, { resolved: !reminder.resolved}, { new: true })
 
       return null
     }

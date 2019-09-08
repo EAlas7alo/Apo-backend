@@ -29,7 +29,7 @@ type Mutation {
     dateExpiry: Date!
   ) : Reminder
 
-  markReminderAsResolved (
+  toggleResolvedStatus (
     id: ID!
   ) : Boolean
 }
