@@ -32,6 +32,10 @@ type Mutation {
   toggleResolvedStatus (
     id: ID!
   ) : Boolean
+
+  deleteReminder (
+    id: ID!
+  ) : Boolean
 }
 `
 

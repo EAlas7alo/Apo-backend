@@ -44,6 +44,11 @@ const resolvers = {
       await Reminder.findByIdAndUpdate(args.id, { resolved: !reminder.resolved}, { new: true })
 
       return null
+    },
+    deleteReminder: async (root, args) => {
+      await Reminder.findByIdAndDelete(args.id)
+
+      return null
     }
   /*
     uploadImage: async (root, { file }, context) => {
