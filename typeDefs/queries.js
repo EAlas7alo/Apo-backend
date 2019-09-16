@@ -15,6 +15,7 @@ type Entry {
   images: [String]
   id: ID!
   date: Date
+  folder: Folder
 }
 
 type Reminder {
@@ -24,10 +25,18 @@ type Reminder {
   resolved: Boolean!
 }
 
+type Folder {
+  id: ID!
+  content: [Entry!]
+  isMainFolder: Boolean!
+}
+
 type Query {
   allEntries: [Entry]
   allReminders: [Reminder]
   activeReminders: [Reminder]
+  allFolders: [Folder]
+  mainFolder: Folder
 }
 
 

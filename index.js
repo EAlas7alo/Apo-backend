@@ -2,10 +2,11 @@ const { ApolloServer } = require('apollo-server')
 const mongoose = require('mongoose')
 const queries = require('./typeDefs/queries')
 const mutations = require('./typeDefs/mutations')
-const resolvers = require('./resolvers/mainResolver')
+const reminderResolver = require('./resolvers/reminderResolver')
+const entryResolver = require('./resolvers/entryResolver')
+const folderResolver = require('./resolvers/folderResolver')
 require('dotenv').config()
 const reminderAgenda = require('./reminders/agenda')
-
 
 mongoose.set('useFindAndModify', false)
 
@@ -21,7 +22,7 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true })
 
 const server = new ApolloServer({ 
   typeDefs: [queries, mutations], 
-  resolvers,
+  resolvers: [reminderResolver, entryResolver, folderResolver],
   formatError: (err) => {
     console.log(err)
   }

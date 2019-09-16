@@ -1,5 +1,6 @@
 const JournalEntry = require('../models/JournalEntry')
 const Reminder = require('../models/Reminder')
+const Folder = require('../models/Folder')
 
 const resolvers = {
   Query: {
@@ -11,6 +12,12 @@ const resolvers = {
     },
     activeReminders: async () => {
       return await Reminder.find({ dateExpiry: { $gte: new Date(0), $lte: new Date() }, resolved: false})
+    },
+    allFolders: async () => {
+      return await Folder.find({})
+    },
+    mainFolder: async () => {
+      return await Folder.find({ mainFolder: true})
     }
   },
 
