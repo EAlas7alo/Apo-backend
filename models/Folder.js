@@ -1,8 +1,17 @@
 const mongoose = require('mongoose')
 
 const schema = new mongoose.Schema({
-  content: {
-    type: String
+  name: {
+    type: String,
+    required: true,
+  },
+  folders: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Folder'
+  },
+  entries: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'JournalEntry'
   },
   isMainFolder: {
     type: Boolean

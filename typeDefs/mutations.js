@@ -36,6 +36,19 @@ type Mutation {
   deleteReminder (
     id: ID!
   ) : Boolean
+
+  addToFolder (
+    id: ID!
+    content: String!
+  ) : Boolean
+  
+  createFolder (
+    name: String
+  ) : Boolean
+
+  deleteFolder (
+    id: ID!
+  ) : Boolean
 }
 `
 

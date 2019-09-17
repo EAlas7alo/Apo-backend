@@ -31,6 +31,6 @@ module.exports = {
       await Reminder.findByIdAndDelete(args.id)
 
       return null
-    }
+    },
   }
 }

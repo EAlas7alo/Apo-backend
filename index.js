@@ -7,6 +7,8 @@ const entryResolver = require('./resolvers/entryResolver')
 const folderResolver = require('./resolvers/folderResolver')
 require('dotenv').config()
 const reminderAgenda = require('./reminders/agenda')
+const Folder = require('./models/Folder')
+const JournalEntry = require('./models/JournalEntry')
 
 mongoose.set('useFindAndModify', false)
 
@@ -29,6 +31,17 @@ const server = new ApolloServer({
 })
 
 reminderAgenda()
+
+mongoose.connection.collection('folders').count(async (err, count) => {
+  if (count === 0) {
+    console.log('Initializing main folder')
+    const entries = await JournalEntry.find({})
+    const mainFolder = new Folder({ name: 'mainFolder', isMainFolder: true, content: entries.map(entry => entry._id) })
+    await mainFolder.save()
+  } else {
+    console.log('Main folder found, aborting folder initialization')
+  }
+})
 
 server.listen().then(({ url }) => {
   console.log(`🚀  Server ready at ${url}`)
