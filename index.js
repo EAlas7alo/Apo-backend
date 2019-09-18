@@ -36,7 +36,12 @@ mongoose.connection.collection('folders').count(async (err, count) => {
   if (count === 0) {
     console.log('Initializing main folder')
     const entries = await JournalEntry.find({})
-    const mainFolder = new Folder({ name: 'mainFolder', isMainFolder: true, content: entries.map(entry => entry._id) })
+    const mainFolder = new Folder({ 
+      name: 'mainFolder', 
+      isMainFolder: true, 
+      entries: entries,
+      itemOrder: entries.map(entry => entry._id)
+    })
     await mainFolder.save()
   } else {
     console.log('Main folder found, aborting folder initialization')

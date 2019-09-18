@@ -9,10 +9,10 @@ const reminderAgenda = async () => {
       resolved: false 
     }).sort({ dateExpiry: 1 })
       .then(reminders => {
-        console.log('active reminders:', reminders)
+        //console.log('active reminders:', reminders)
       })
     
-    console.log('checking reminders')
+    //console.log('checking reminders')
     done()
   })
   

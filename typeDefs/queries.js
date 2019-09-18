@@ -27,7 +27,8 @@ type Reminder {
 
 type Folder {
   id: ID!
-  content: [Entry!]
+  entries: [Entry]
+  folders: [Folder]
   isMainFolder: Boolean!
 }
 

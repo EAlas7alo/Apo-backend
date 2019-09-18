@@ -5,14 +5,18 @@ const schema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  folders: {
+  folders: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Folder'
-  },
-  entries: {
+  }],
+  entries: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'JournalEntry'
-  },
+  }],
+  itemOrder: [{
+    type: String,
+    required: true,
+  }],
   isMainFolder: {
     type: Boolean
   }
