@@ -29,6 +29,8 @@ type Folder {
   id: ID!
   entries: [Entry]
   folders: [Folder]
+  name: String
+  itemOrder: [String]
   isMainFolder: Boolean!
 }
 

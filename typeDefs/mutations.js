@@ -43,7 +43,8 @@ type Mutation {
   ) : Boolean
   
   createFolder (
-    name: String
+    name: String!
+    parentId: ID!
   ) : Boolean
 
   deleteFolder (
