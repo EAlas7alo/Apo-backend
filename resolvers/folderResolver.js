@@ -2,11 +2,17 @@ const Folder = require('../models/Folder')
 
 module.exports = {
   Query: {
-    allFolders: async () => {
-      return await Folder.find({})
-    },
+
     mainFolder: async () => {
       const folder = await Folder.findOne({ isMainFolder: true })
+        .populate('entries')
+        .populate('folders')
+      console.log(folder)
+      return folder
+    },
+    getFolder: async (parent, args, context, info) => {
+      console.log(args.id)
+      const folder = await Folder.findById(args.id)
         .populate('entries')
         .populate('folders')
       console.log(folder)

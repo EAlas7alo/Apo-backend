@@ -40,6 +40,7 @@ type Query {
   activeReminders: [Reminder]
   allFolders: [Folder]
   mainFolder: Folder
+  getFolder(id: ID!): Folder
 }
 
 
