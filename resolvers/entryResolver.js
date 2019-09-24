@@ -1,4 +1,5 @@
 const JournalEntry = require('../models/JournalEntry')
+const Folder = require('../models/Folder')
 
 module.exports = {
   Query: {
@@ -11,6 +12,8 @@ module.exports = {
     createEntry: async (root, args) => {
       const entry = new JournalEntry({ title: args.title, content: args.content, images: args.images })
       await entry.save()
+      console.log(args)
+      await Folder.findByIdAndUpdate(args.folder, { $push: { entries: entry._id, itemOrder: entry._id } })
       return entry
     },
     editEntry: async (root, args) => {

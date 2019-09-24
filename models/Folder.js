@@ -18,7 +18,8 @@ const schema = new mongoose.Schema({
     required: true,
   }],
   isMainFolder: {
-    type: Boolean
+    type: Boolean,
+    required: true,
   }
 })
 

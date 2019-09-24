@@ -32,7 +32,7 @@ const server = new ApolloServer({
 
 reminderAgenda()
 
-mongoose.connection.collection('folders').count(async (err, count) => {
+mongoose.connection.collection('folders').countDocuments(async (err, count) => {
   if (count === 0) {
     console.log('Initializing main folder')
     const entries = await JournalEntry.find({})

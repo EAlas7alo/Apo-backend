@@ -7,6 +7,7 @@ type Mutation {
     title: String!
     content: String!
     images: [String!]!
+    folder: ID!
   ): Entry
 
   editEntry (
