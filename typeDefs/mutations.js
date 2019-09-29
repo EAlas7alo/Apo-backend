@@ -23,6 +23,12 @@ type Mutation {
 
   deleteEntry (
     id: ID!
+    folder: ID!
+  ) : ID
+
+  deleteEntries (
+    idList: [ID]!
+    folder: ID!
   ) : Boolean
 
   createReminder (
@@ -46,10 +52,14 @@ type Mutation {
   createFolder (
     name: String!
     parentId: ID!
-  ) : Boolean
+  ) : Folder
 
   deleteFolder (
     id: ID!
+  ) : Boolean
+
+  deleteManyFolders (
+    idList: [ID]!
   ) : Boolean
 }
 `

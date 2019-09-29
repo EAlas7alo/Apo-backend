@@ -9,7 +9,7 @@ module.exports = {
         .populate('folders')
       return folder
     },
-    getFolder: async (parent, args, context, info) => {
+    getFolder: async (parent, args) => {
       const folder = await Folder.findById(args.id)
         .populate('entries')
         .populate('folders')
@@ -23,17 +23,26 @@ module.exports = {
       await folder.save()
       await Folder.findByIdAndUpdate(args.parentId, { $push: { folders: folder }})
 
-      return null
+      return folder
     },
     //TODO recursive deletion
     deleteFolder: async (_, args) => {
       const folder = await Folder.findById(args.id)
       await JournalEntry.deleteMany({ _id: { $exists: true, $in: folder.entries }})
-      if (folder.folders.length > 0) {
-        let entriesToDelete = []
-        let foldersToDelete = []
-      }
       await Folder.findByIdAndDelete(args.id)
+
+      return null
+    },
+    deleteManyFolders: async (_, args) => {
+      console.log(args)
+      if (args.idList.length === 0) return null
+      const folders = await Folder.find({ _id: { $exists: true, $in: args.idList }})
+      const entries = folders.reduce((acc, currV) => {
+        return acc.concat(currV.entries)
+      }, [])
+      console.log(entries)
+      await JournalEntry.deleteMany({ _id: { $exists: true, $in: entries }})
+      await Folder.deleteMany({ _id: { $exists: true, $in: args.idList }})
 
       return null
     },

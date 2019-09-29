@@ -23,7 +23,16 @@ module.exports = {
     },
     deleteEntry: async (root, args) => {
       await JournalEntry.findByIdAndDelete(args.id)
-      return true
+      await Folder.findByIdAndUpdate(args.folder, { $pull: { entries: args.id, itemOrder: args.id }})
+      return args.id
     },
+    deleteEntries: async (root, args) => {
+      if (args.idList.length === 0) return null
+      const entries = args.idList
+      await JournalEntry.deleteMany({ _id: { $in: entries }})
+      await Folder.findByIdAndUpdate(args.folder, { $pull: { entries: { $in: entries }, itemOrder: { $in: entries } }})
+
+      return null
+    }
   }
 }
