@@ -1,5 +1,6 @@
 const Folder = require('../models/Folder')
 const JournalEntry = require('../models/JournalEntry')
+const mongoose = require('mongoose')
 
 module.exports = {
   Query: {
@@ -34,15 +35,28 @@ module.exports = {
       return null
     },
     deleteManyFolders: async (_, args) => {
-      console.log(args)
       if (args.idList.length === 0) return null
-      const folders = await Folder.find({ _id: { $exists: true, $in: args.idList }})
-      const entries = folders.reduce((acc, currV) => {
-        return acc.concat(currV.entries)
-      }, [])
-      console.log(entries)
-      await JournalEntry.deleteMany({ _id: { $exists: true, $in: entries }})
-      await Folder.deleteMany({ _id: { $exists: true, $in: args.idList }})
+      const idArray = args.idList.map(id => mongoose.Types.ObjectId(id))
+      const folders = await Folder.aggregate([
+        { $match: { _id: { $in: idArray }}},
+        { $graphLookup: {
+          from: 'folders', 
+          startWith: '$folders',
+          connectFromField: 'folders',
+          connectToField: '_id',
+          as: 'children', 
+        }
+        }])
+      const entriesToRemove = folders.reduce((acc, currV) => {
+        const entries = acc.concat(currV.entries)
+        return entries.concat(currV.children.map(folder => folder.entries))
+      }, []).flat()
+      const foldersToRemove = folders.reduce((acc, currV) => {
+        const folders = acc.concat(currV._id)
+        return folders.concat(currV.children.map(folder => folder._id))
+      }, []).flat()
+      await JournalEntry.deleteMany({ _id: { $exists: true, $in: entriesToRemove }})
+      await Folder.deleteMany({ _id: { $exists: true, $in: foldersToRemove }})
 
       return null
     },
@@ -52,19 +66,4 @@ module.exports = {
       return null
     }
   }
-}
-
-const deleteFolderContentRecursively = (folder, entriesArray, foldersArray) => {
-  if (folder.folders.length > 0) {
-    return true
-  }
-  folder.entries.forEach(element => {
-    entriesArray.push(element.id)
-  })
-  folder.folders.forEach(element => {
-    foldersArray.push(element.id)
-  })
-  folder.folders.forEach(element => {
-    deleteFolderContentRecursively(element, entriesArray, foldersArray)
-  })
 }
