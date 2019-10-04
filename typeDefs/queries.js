@@ -34,6 +34,12 @@ type Folder {
   isMainFolder: Boolean!
 }
 
+type User {
+  username: String!
+  passwordHash: String!
+  id: ID!
+}
+
 type Query {
   allEntries: [Entry]
   allReminders: [Reminder]
