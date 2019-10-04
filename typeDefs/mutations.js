@@ -2,6 +2,10 @@ const { gql } = require('apollo-server')
 
 
 const mutations = gql`
+type Token {
+  value: String!
+}
+
 type Mutation {
   createEntry (
     title: String!
@@ -61,6 +65,16 @@ type Mutation {
   deleteManyFolders (
     idList: [ID]!
   ) : Boolean
+
+  createUser (
+    username: String!
+    password: String!
+  ) : User
+
+  login (
+    username: String!
+    password: String!
+  ) : Token
 }
 `
 

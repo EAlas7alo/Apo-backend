@@ -47,6 +47,7 @@ type Query {
   allFolders: [Folder]
   mainFolder: Folder
   getFolder(id: ID!): Folder
+  me: User
 }
 
 
