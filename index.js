@@ -10,6 +10,7 @@ require('dotenv').config()
 const reminderAgenda = require('./reminders/agenda')
 const Folder = require('./models/Folder')
 const JournalEntry = require('./models/JournalEntry')
+const Reminder = require('./models/Reminder')
 const User = require('./models/User')
 const jwt = require('jsonwebtoken')
 
@@ -36,9 +37,10 @@ const server = new ApolloServer({
       const decodedToken = jwt.verify(
         auth.substring(7), JWT_SECRET
       )
-      const currentUser = await User.findById(decodedToken.id).populate('friends')
+      const currentUser = await User.findById(decodedToken.id)
       return { currentUser }
     }
+    return null
   },
   formatError: (err) => {
     console.log(err)
