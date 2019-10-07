@@ -56,6 +56,7 @@ type Mutation {
   createFolder (
     name: String!
     parentId: ID!
+    newUser: Boolean
   ) : Folder
 
   deleteFolder (

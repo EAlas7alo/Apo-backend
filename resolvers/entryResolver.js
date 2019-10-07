@@ -11,17 +11,18 @@ module.exports = {
   
   Mutation: {
     createEntry: async (root, args, context) => {
+      const currentUser = context.currentUser
+
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated')
+      }
+
       const entry = new JournalEntry({ 
         title: args.title,
         content: args.content,
         images: args.images,
         user: context.currentUser._id
       })
-      const currentUser = context.currentUser
-
-      if (!currentUser) {
-        throw new AuthenticationError('not authenticated')
-      }
 
       try {
         await entry.save()
@@ -36,26 +37,33 @@ module.exports = {
       return entry
     },
     editEntry: async (root, args, context) => {
-      const entry = await JournalEntry.findById(args.id)
-      console.log(entry.user, context.currentUser._id)
-      if (entry.user.toString() !== context.currentUser._id.toString()) {
-        return new AuthenticationError('wrong user or not logged in')
+      let entry = await JournalEntry.findById(args.id)
+      if (!context.currentUser) {
+        throw new AuthenticationError('not authenticated')
       }
-      await entry.update({title: args.title, content: args.content, images: args.images}, {new: true})
+      if (entry.user.toString() !== context.currentUser._id.toString()) {
+        return new AuthenticationError('wrong user')
+      }
+      entry = await JournalEntry.findByIdAndUpdate(args.id, {title: args.title, content: args.content, images: args.images}, {new: true})
 
       return entry
     },
     deleteEntry: async (root, args, context) => {
       const entry = await JournalEntry.findById(args.id)
-      console.log(entry.user, context.currentUser._id)
+      if (!context.currentUser) {
+        throw new AuthenticationError('not authenticated')
+      }
       if (entry.user.toString() !== context.currentUser._id.toString()) {
         return new AuthenticationError('wrong user or not logged in')
       }
       await entry.remove()
-      await Folder.findByIdAndRemove(args.folder, { $pull: { entries: args.id, itemOrder: args.id }})
+      await Folder.findByIdAndUpdate(args.folder, { $pull: { entries: args.id, itemOrder: args.id }})
       return args.id
     },
     deleteEntries: async (root, args, context) => {
+      if (!context.currentUser) {
+        throw new AuthenticationError('not authenticated')
+      }
       if (args.idList.length === 0) return null
       const entries = args.idList
       await JournalEntry.deleteMany({ _id: { $in: entries }, user: context.currentUser._id})

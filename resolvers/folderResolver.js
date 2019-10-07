@@ -6,12 +6,18 @@ const { AuthenticationError } = require('apollo-server')
 module.exports = {
   Query: {
     mainFolder: async (parent, args, context) => {
+      if (!context.currentUser) {
+        return new AuthenticationError('not logged in')
+      }
       const folder = await Folder.findOne({ user: context.currentUser._id, isMainFolder: true })
         .populate('entries')
         .populate('folders')
       return folder
     },
     getFolder: async (parent, args, context) => {
+      if (!context.currentUser) {
+        return new AuthenticationError('not logged in')
+      }
       const folder = await Folder.findById(args.id)
         .populate('entries')
         .populate('folders')
@@ -23,33 +29,49 @@ module.exports = {
   },
   Mutation: {
     createFolder: async (_, args, context) => {
-      // Main folder, which doesn't have a parentId, is created in index.js
-      if (!context.currentUser._id) {
+      if (!context.currentUser) {
         return new AuthenticationError('not logged in')
       }
-      const folder = new Folder(
-        { name: args.name,
-          entries: [],
-          folders: [],
-          isMainFolder: false,
-          user: context.currentUser._id,
-        })
+      let folder
+      if (args.newUser) {
+        folder = new Folder(
+          { name: args.name,
+            entries: [],
+            folders: [],
+            isMainFolder: true,
+            user: context.currentUser._id,
+          })
+      } else {
+        folder = new Folder(
+          { name: args.name,
+            entries: [],
+            folders: [],
+            isMainFolder: false,
+            user: context.currentUser._id,
+          })
+      }
+
       await folder.save()
       await Folder.findByIdAndUpdate(args.parentId, { $push: { folders: folder }})
 
       return folder
     },
     deleteFolder: async (_, args, context) => {
+      if (!context.currentUser) {
+        return new AuthenticationError('not logged in')
+      }
       const folder = await Folder.findById(args.id)
       if (folder.user !== context.currentUser._id) {
-        return new AuthenticationError('wrong user or not logged in')
+        return new AuthenticationError('wrong user')
       }
       await JournalEntry.deleteMany({ _id: { $exists: true, $in: folder.entries }})
       await Folder.findByIdAndDelete(args.id)
-
       return null
     },
     deleteManyFolders: async (_, args, context) => {
+      if (!context.currentUser) {
+        return new AuthenticationError('not logged in')
+      }
       if (args.idList.length === 0) return null
       const idArray = args.idList.map(id => mongoose.Types.ObjectId(id))
       const folders = await Folder.aggregate([
@@ -76,8 +98,11 @@ module.exports = {
       return null
     },
     addToFolder: async (_, args, context) => {
+      if (!context.currentUser) {
+        return new AuthenticationError('not logged in')
+      }
       if (args.id !== context.currentUser._id) {
-        return new AuthenticationError('wrong user or not logged in')
+        return new AuthenticationError('wrong user')
       }
       await Folder.findByIdAndUpdate(args.id, { $push: { entries: args.content, itemOrder: args.content.id }})
 
