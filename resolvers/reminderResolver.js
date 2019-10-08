@@ -41,10 +41,13 @@ module.exports = {
         throw new AuthenticationError('not authenticated')
       }
       const reminder = await Reminder.findById(args.id)
-      if (!context.currentUser._id !== reminder.user) {
+      console.log(context.currentUser)
+      if (context.currentUser._id.toString() !== reminder.user.toString()) {
+        console.log(context.currentUser._id, reminder.user)
         throw new AuthenticationError('wrong user')
       }
-      await reminder.update(({ resolved: !reminder.resolved}, { new: true }))
+      reminder.resolved = !reminder.resolved
+      reminder.save()
 
       return null
     },
@@ -53,7 +56,7 @@ module.exports = {
         throw new AuthenticationError('not authenticated')
       }
       const reminder = await Reminder.findById(args.id)
-      if (!context.currentUser._id !== reminder.user) {
+      if (context.currentUser._id.toString() !== reminder.user.toString()) {
         throw new AuthenticationError('wrong user')
       }
       await reminder.remove()
