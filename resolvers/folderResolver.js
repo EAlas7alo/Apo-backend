@@ -21,7 +21,7 @@ module.exports = {
       const folder = await Folder.findById(args.id)
         .populate('entries')
         .populate('folders')
-      if (folder.user !== context.currentUser._id) {
+      if (folder.user.toString() !== context.currentUser._id.toString()) {
         return new AuthenticationError('wrong user or not logged in')
       }
       return folder
