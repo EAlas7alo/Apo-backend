@@ -1,4 +1,5 @@
 const User = require('../models/User')
+const Folder = require('../models/Folder')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { UserInputError } = require('apollo-server')
@@ -12,7 +13,6 @@ module.exports = {
   Mutation: {
     createUser: async (root, args) => {
       try {
-        console.log('xd')
         const saltRounds = 10
         const passwordHash = await bcrypt.hash(args.password, saltRounds)
         const user = new User({
@@ -20,7 +20,15 @@ module.exports = {
           passwordHash,
         })
         const savedUser = await user.save()
-        return savedUser
+        const folder = new Folder(
+          { name: `mainfolder_${savedUser._id}`,
+            entries: [],
+            folders: [],
+            isMainFolder: true,
+            user: savedUser._id
+          })
+        await folder.save()
+        return savedUser.username
       } catch (error) {
         console.log(error)
         return error

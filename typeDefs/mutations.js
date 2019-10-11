@@ -70,7 +70,7 @@ type Mutation {
   createUser (
     username: String!
     password: String!
-  ) : User
+  ) : String
 
   login (
     username: String!
